@@ -1,11 +1,11 @@
 import { Box } from "@chakra-ui/react";
-import React, { Children } from "react";
+import React from "react";
 
 interface WrapperProps {}
 
 const Wrapper: React.FC<WrapperProps> = ({ children }) => {
   return (
-    <Box mt={20} mx="auto" w="100%" maxW="400px">
+    <Box my={10} w="100%" maxW="500px" bg="white" p={10} rounded={"lg"}>
       {children}
     </Box>
   );

@@ -4,26 +4,29 @@ import { useRouter } from "next/router";
 import React from "react";
 import AuthLayout from "../components/AuthLayout";
 import InputField from "../components/InputField";
-import { useRegisterMutation } from "../generated/graphql";
+import { useLoginMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 
-interface registerProps {}
+interface loginProps {}
 
-const Register: React.FC<registerProps> = ({}) => {
+const Login: React.FC<loginProps> = ({}) => {
   const router = useRouter();
-  const [, register] = useRegisterMutation();
-  return (
-    <AuthLayout title="Register">
-      <Formik
-        initialValues={{ username: "", email: "", password: "" }}
-        onSubmit={async (values, { setErrors }) => {
-          const response = await register(values);
+  const [, login] = useLoginMutation();
 
-          if (response.data?.register.errors) {
-            setErrors(toErrorMap(response.data.register.errors));
-          } else if (response.data?.register.user) {
+  return (
+    <AuthLayout title="Login">
+      <Formik
+        initialValues={{ username: "", password: "" }}
+        onSubmit={async (values, { setErrors, setSubmitting }) => {
+          const response = await login(values);
+
+          if (response.data?.login.errors) {
+            setErrors(toErrorMap(response.data.login.errors));
+          } else if (response.data?.login.user) {
             router.push("/");
           }
+
+          setSubmitting(false);
         }}>
         {({ isSubmitting }) => (
           <Form>
@@ -32,14 +35,6 @@ const Register: React.FC<registerProps> = ({}) => {
                 name="username"
                 placeholder="Enter your username"
                 label="Username"
-              />
-            </Box>
-            <Box mt={4}>
-              <InputField
-                name="email"
-                placeholder="Enter your email"
-                label="Email"
-                type="email"
               />
             </Box>
             <Box mt={4}>
@@ -55,7 +50,7 @@ const Register: React.FC<registerProps> = ({}) => {
               colorScheme="teal"
               isLoading={isSubmitting}
               type="submit">
-              Register
+              Login
             </Button>
           </Form>
         )}
@@ -64,4 +59,4 @@ const Register: React.FC<registerProps> = ({}) => {
   );
 };
 
-export default Register;
+export default Login;
