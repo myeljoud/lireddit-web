@@ -36,12 +36,12 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
             <Text>Loading ...</Text>
           ) : (
             <>
-              <Link>
-                <NextLink href="/login">Login</NextLink>
-              </Link>
-              <Link>
-                <NextLink href="/register">Register</NextLink>
-              </Link>
+              <NextLink href="/login" passHref>
+                <Link>Login</Link>
+              </NextLink>
+              <NextLink href="/register" passHref>
+                <Link>Register</Link>
+              </NextLink>
             </>
           )}
         </HStack>
