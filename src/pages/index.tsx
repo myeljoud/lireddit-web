@@ -33,8 +33,6 @@ const Home: NextPage = () => {
               h="max-content">
               {error && <Text color="red.500">Error ...</Text>}
 
-              {fetching && <Text>Loading ...</Text>}
-
               {data?.me ? (
                 <>
                   <Text>
@@ -48,6 +46,8 @@ const Home: NextPage = () => {
                     Logout
                   </Button>
                 </>
+              ) : fetching ? (
+                <Text>Loading ...</Text>
               ) : (
                 <>
                   <Link>
