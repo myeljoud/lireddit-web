@@ -5,7 +5,7 @@ interface WrapperProps {}
 
 const Wrapper: React.FC<WrapperProps> = ({ children }) => {
   return (
-    <Box my={10} w="100%" maxW="500px" bg="white" p={10} rounded={"lg"}>
+    <Box my={10} w="100%" maxW="500px" bg="white" p={[6, 10]} rounded={"lg"}>
       {children}
     </Box>
   );
