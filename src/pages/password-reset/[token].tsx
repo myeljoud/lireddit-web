@@ -1,27 +1,34 @@
-import { Box, Button } from "@chakra-ui/react";
-import { Formik, Form } from "formik";
+import { Alert, AlertIcon, Box, Button } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import AuthLayout from "../../components/AuthLayout";
 import InputField from "../../components/InputField";
-import { useLoginMutation } from "../../generated/graphql";
+import { usePasswordResetMutation } from "../../generated/graphql";
 import { toErrorMap } from "../../utils/toErrorMap";
 
 const PasswordReset: NextPage<{ token: string }> = ({ token }) => {
   const router = useRouter();
-  const [, login] = useLoginMutation();
+  const [tokenError, setTokenError] = useState("");
+  const [, passwordReset] = usePasswordResetMutation();
   return (
     <AuthLayout title="Password Reset">
       <Formik
         initialValues={{ newPassword: "", passwordConfirmation: "" }}
-        onSubmit={async (values, { setErrors, setSubmitting }) => {
-          // const response = await login(values);
-          // if (response.data?.login.errors) {
-          //   setErrors(toErrorMap(response.data.login.errors));
-          // } else if (response.data?.login.user) {
-          //   router.push("/");
-          // }
-          // setSubmitting(false);
+        onSubmit={async (values, { setErrors }) => {
+          setTokenError("");
+          const response = await passwordReset({ ...values, token });
+          if (response.data?.passwordReset.errors) {
+            const errorsMap = toErrorMap(response.data.passwordReset.errors);
+            console.log("errorsMap: ", errorsMap);
+            if ("token" in errorsMap) {
+              setTokenError(errorsMap.token);
+            }
+            setErrors(errorsMap);
+          } else if (response.data?.passwordReset.user) {
+            router.push("/");
+          }
         }}>
         {({ isSubmitting }) => (
           <Form>
@@ -41,6 +48,12 @@ const PasswordReset: NextPage<{ token: string }> = ({ token }) => {
                 type="password"
               />
             </Box>
+            {tokenError ? (
+              <Alert status="error" mt={4}>
+                <AlertIcon />
+                {tokenError}
+              </Alert>
+            ) : null}
             <Button
               mt={4}
               colorScheme="teal"

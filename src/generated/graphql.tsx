@@ -28,6 +28,7 @@ export type Mutation = {
   forgotPassword: Scalars['Boolean'];
   login: UserResponse;
   logout: Scalars['Boolean'];
+  passwordReset: UserResponse;
   register: UserResponse;
   updatePost?: Maybe<Post>;
 };
@@ -52,6 +53,13 @@ export type MutationForgotPasswordArgs = {
 export type MutationLoginArgs = {
   password: Scalars['String'];
   usernameOrEmail: Scalars['String'];
+};
+
+
+export type MutationPasswordResetArgs = {
+  newPassword: Scalars['String'];
+  passwordConfirmation: Scalars['String'];
+  token: Scalars['String'];
 };
 
 
@@ -130,6 +138,15 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type PasswordResetMutationVariables = Exact<{
+  token: Scalars['String'];
+  passwordConfirmation: Scalars['String'];
+  newPassword: Scalars['String'];
+}>;
+
+
+export type PasswordResetMutation = { __typename?: 'Mutation', passwordReset: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: number, username: string, email: string } | null } };
+
 export type RegisterMutationVariables = Exact<{
   options: RegisterInputs;
 }>;
@@ -188,6 +205,27 @@ export const LogoutDocument = gql`
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const PasswordResetDocument = gql`
+    mutation PasswordReset($token: String!, $passwordConfirmation: String!, $newPassword: String!) {
+  passwordReset(
+    token: $token
+    passwordConfirmation: $passwordConfirmation
+    newPassword: $newPassword
+  ) {
+    errors {
+      field
+      message
+    }
+    user {
+      ...NormalUser
+    }
+  }
+}
+    ${NormalUserFragmentDoc}`;
+
+export function usePasswordResetMutation() {
+  return Urql.useMutation<PasswordResetMutation, PasswordResetMutationVariables>(PasswordResetDocument);
 };
 export const RegisterDocument = gql`
     mutation Register($options: RegisterInputs!) {
