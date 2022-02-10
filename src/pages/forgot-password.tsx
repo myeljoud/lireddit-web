@@ -12,6 +12,8 @@ import AuthLayout from "../components/AuthLayout";
 import InputField from "../components/InputField";
 import { useForgotPasswordMutation } from "../generated/graphql";
 import { useRouter } from "next/router";
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 interface ForgotPasswordProps {}
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({}) => {
@@ -55,6 +57,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({}) => {
         <Formik
           initialValues={{ email: "" }}
           onSubmit={async values => {
+            setCompleted(false);
             const response = await forgotPassword(values);
 
             if (response.data?.forgotPassword) {
@@ -91,4 +94,4 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({}) => {
   );
 };
 
-export default ForgotPassword;
+export default withUrqlClient(createUrqlClient)(ForgotPassword);

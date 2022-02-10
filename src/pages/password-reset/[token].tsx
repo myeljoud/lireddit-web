@@ -1,11 +1,13 @@
 import { Alert, AlertIcon, Box, Button } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { NextPage } from "next";
+import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import AuthLayout from "../../components/AuthLayout";
 import InputField from "../../components/InputField";
 import { usePasswordResetMutation } from "../../generated/graphql";
+import { createUrqlClient } from "../../utils/createUrqlClient";
 import { toErrorMap } from "../../utils/toErrorMap";
 
 const PasswordReset: NextPage<{ token: string }> = ({ token }) => {
@@ -74,4 +76,4 @@ PasswordReset.getInitialProps = ({ query }) => {
   };
 };
 
-export default PasswordReset;
+export default withUrqlClient(createUrqlClient)(PasswordReset);
