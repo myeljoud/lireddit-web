@@ -9,7 +9,9 @@ type stateType = Post[] | string | null;
 
 const Home: NextPage = () => {
   const [{ fetching, error, data }] = usePostsQuery();
+
   let state: stateType = null;
+
   if (fetching) {
     state = "Loading ...";
   } else if (data?.posts) {
