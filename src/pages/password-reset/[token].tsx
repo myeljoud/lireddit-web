@@ -10,10 +10,13 @@ import { usePasswordResetMutation } from "../../generated/graphql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { toErrorMap } from "../../utils/toErrorMap";
 
-const PasswordReset: NextPage<{ token: string }> = ({ token }) => {
-  const router = useRouter();
+const PasswordReset: NextPage<{}> = () => {
+  const { push, query } = useRouter();
+  const token = typeof query.token === "string" ? query.token : "";
+
   const [tokenError, setTokenError] = useState("");
   const [, passwordReset] = usePasswordResetMutation();
+
   return (
     <AuthLayout title="Password Reset">
       <Formik
@@ -29,7 +32,7 @@ const PasswordReset: NextPage<{ token: string }> = ({ token }) => {
             }
             setErrors(errorsMap);
           } else if (response.data?.passwordReset.user) {
-            router.push("/");
+            push("/");
           }
         }}>
         {({ isSubmitting }) => (
@@ -68,12 +71,6 @@ const PasswordReset: NextPage<{ token: string }> = ({ token }) => {
       </Formik>
     </AuthLayout>
   );
-};
-
-PasswordReset.getInitialProps = ({ query }) => {
-  return {
-    token: query.token as string,
-  };
 };
 
 export default withUrqlClient(createUrqlClient)(PasswordReset);

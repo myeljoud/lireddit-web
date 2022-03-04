@@ -13,7 +13,7 @@ import { toErrorMap } from "../utils/toErrorMap";
 interface loginProps {}
 
 const Login: React.FC<loginProps> = ({}) => {
-  const router = useRouter();
+  const { push, query } = useRouter();
   const [, login] = useLoginMutation();
 
   return (
@@ -26,7 +26,7 @@ const Login: React.FC<loginProps> = ({}) => {
           if (response.data?.login.errors) {
             setErrors(toErrorMap(response.data.login.errors));
           } else if (response.data?.login.user) {
-            router.push("/");
+            typeof query.next === "string" ? push(query.next) : push("/");
           }
 
           setSubmitting(false);

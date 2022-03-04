@@ -1,4 +1,4 @@
-import { dedupExchange, fetchExchange } from "urql";
+import { dedupExchange, errorExchange, fetchExchange } from "urql";
 import {
   LogoutMutation,
   MeQuery,
@@ -63,6 +63,11 @@ export const createUrqlClient = (ssrExchange: any) => ({
       },
     }),
     ssrExchange,
+    errorExchange({
+      onError(error) {
+        console.error("Urql Error exchange", error);
+      },
+    }),
     fetchExchange,
   ],
 });
