@@ -23,7 +23,7 @@ const CreatePost: React.FC<{}> = ({}) => {
         <Alert status="warning" my={4}>
           <AlertIcon />
           You have to login to do this action.
-          <NextLink href="/login" passHref>
+          <NextLink href={`/login?next=${router.pathname}`} passHref>
             <Link fontWeight="bold" ml={2}>
               Login
             </Link>
