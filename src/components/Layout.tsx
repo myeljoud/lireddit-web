@@ -14,7 +14,7 @@ const Layout: React.FC<LayoutProps> = ({
   pageDescription,
 }) => {
   return (
-    <div>
+    <Box pb={10}>
       <Head>
         <title>{pageTitle} | Lireddit Inc.</title>
         <meta name="description" content={pageDescription} />
@@ -27,7 +27,7 @@ const Layout: React.FC<LayoutProps> = ({
           <Box as="main">{children}</Box>
         </Container>
       </VStack>
-    </div>
+    </Box>
   );
 };
 

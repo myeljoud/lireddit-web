@@ -77,6 +77,7 @@ export type Post = {
   __typename?: 'Post';
   authorId: Scalars['Float'];
   body: Scalars['String'];
+  bodySnippet: Scalars['String'];
   createdAt: Scalars['String'];
   id: Scalars['Int'];
   points: Scalars['Float'];
@@ -106,6 +107,12 @@ export type Query = {
 
 export type QueryPostArgs = {
   id: Scalars['Float'];
+};
+
+
+export type QueryPostsArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
 };
 
 export type RegisterInputs = {
@@ -179,10 +186,13 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, username: string, email: string } | null };
 
-export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
+export type PostsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: InputMaybe<Scalars['String']>;
+}>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', id: number, title: string, authorId: number, body: string, points: number, preview: boolean, createdAt: string, updatedAt: string }> };
+export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', id: number, title: string, authorId: number, points: number, createdAt: string, bodySnippet: string }> };
 
 export const NormalUserFragmentDoc = gql`
     fragment NormalUser on User {
@@ -300,20 +310,18 @@ export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, '
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };
 export const PostsDocument = gql`
-    query Posts {
-  posts {
+    query Posts($limit: Int!, $cursor: String) {
+  posts(limit: $limit, cursor: $cursor) {
     id
     title
     authorId
-    body
     points
-    preview
     createdAt
-    updatedAt
+    bodySnippet
   }
 }
     `;
 
-export function usePostsQuery(options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'>) {
+export function usePostsQuery(options: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'>) {
   return Urql.useQuery<PostsQuery>({ query: PostsDocument, ...options });
 };
