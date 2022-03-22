@@ -14,8 +14,6 @@ const Home: NextPage = () => {
     cursor: null as null | string,
   });
 
-  console.log("variables: ", variables);
-
   const [{ fetching, error, data }] = usePostsQuery({ variables });
 
   return (
@@ -35,8 +33,8 @@ const Home: NextPage = () => {
       <Box mt={8}>
         {fetching && !data && "Loading"}
         {error && "Error ..."}
-        {data?.posts && data.posts.length > 0
-          ? data.posts.map((post, idx) => (
+        {data?.posts && data.posts.posts.length > 0
+          ? data.posts.posts.map((post, idx) => (
               <Box key={post.id}>
                 <NextLink href="/" passHref>
                   <Link mb={2} fontWeight="bold">
@@ -44,19 +42,19 @@ const Home: NextPage = () => {
                   </Link>
                 </NextLink>
                 <Text>{post.bodySnippet}</Text>
-                {data.posts.length - 1 !== idx && <Divider my={4} />}
+                {data.posts.posts.length - 1 !== idx && <Divider my={4} />}
               </Box>
             ))
           : "You have no posts for now!"}
       </Box>
 
-      {data && data.posts.length >= variables.limit && (
+      {data && data.posts.hasMore && (
         <Flex mt={8} justifyContent="center">
           <Button
             onClick={() =>
               setVariables({
                 limit: variables.limit,
-                cursor: data.posts[data.posts.length - 1].createdAt,
+                cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
               })
             }
             isLoading={fetching}>

@@ -26,7 +26,6 @@ const PasswordReset: NextPage<{}> = () => {
           const response = await passwordReset({ ...values, token });
           if (response.data?.passwordReset.errors) {
             const errorsMap = toErrorMap(response.data.passwordReset.errors);
-            console.log("errorsMap: ", errorsMap);
             if ("token" in errorsMap) {
               setTokenError(errorsMap.token);
             }
