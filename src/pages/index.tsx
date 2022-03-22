@@ -3,16 +3,20 @@ import { Box, Button, Divider, Flex, Link, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
+import { useState } from "react";
 import Layout from "../components/Layout";
 import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 
 const Home: NextPage = () => {
-  const [{ fetching, error, data }] = usePostsQuery({
-    variables: {
-      limit: 10,
-    },
+  const [variables, setVariables] = useState({
+    limit: 10,
+    cursor: null as null | string,
   });
+
+  console.log("variables: ", variables);
+
+  const [{ fetching, error, data }] = usePostsQuery({ variables });
 
   return (
     <Layout pageTitle="Home page">
@@ -31,23 +35,35 @@ const Home: NextPage = () => {
       <Box mt={8}>
         {fetching && !data && "Loading"}
         {error && "Error ..."}
-        {data?.posts &&
-          data.posts.map(p => (
-            <Box key={p.id}>
-              <NextLink href="/" passHref>
-                <Link mb={2} fontWeight="bold">
-                  {p.title}
-                </Link>
-              </NextLink>
-              <Text>{p.bodySnippet}</Text>
-              <Divider my={4} />
-            </Box>
-          ))}
+        {data?.posts && data.posts.length > 0
+          ? data.posts.map((post, idx) => (
+              <Box key={post.id}>
+                <NextLink href="/" passHref>
+                  <Link mb={2} fontWeight="bold">
+                    {post.title}
+                  </Link>
+                </NextLink>
+                <Text>{post.bodySnippet}</Text>
+                {data.posts.length - 1 !== idx && <Divider my={4} />}
+              </Box>
+            ))
+          : "You have no posts for now!"}
       </Box>
 
-      <Flex mt={8} justifyContent="center">
-        <Button>Load more ...</Button>
-      </Flex>
+      {data && data.posts.length >= variables.limit && (
+        <Flex mt={8} justifyContent="center">
+          <Button
+            onClick={() =>
+              setVariables({
+                limit: variables.limit,
+                cursor: data.posts[data.posts.length - 1].createdAt,
+              })
+            }
+            isLoading={fetching}>
+            Load more ...
+          </Button>
+        </Flex>
+      )}
     </Layout>
   );
 };
